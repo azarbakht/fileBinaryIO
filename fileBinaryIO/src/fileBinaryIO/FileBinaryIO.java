@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.util.Iterator;
 
 public class FileBinaryIO {
 
@@ -27,6 +29,8 @@ public class FileBinaryIO {
 
 		objectOutputStreaming();
 		objectInputStreaming();
+
+		randomAccessFileIO();
 	}
 
 	public static void output() throws IOException {
@@ -122,16 +126,56 @@ public class FileBinaryIO {
 
 		output.close();
 	}
-	
+
 	public static void objectInputStreaming() throws IOException, ClassNotFoundException {
 		ObjectInputStream input = new ObjectInputStream(new FileInputStream("fileWithObjectsInIt.dat"));
-		
+
 		String stringUTFcontent = input.readUTF();
 		double adad = input.readDouble();
 		java.util.Date date = (java.util.Date)(input.readObject());
 		System.out.println(stringUTFcontent + "\n" + adad  + "\n" + date);
-		
+
 		input.close();
+	}
+
+	public static void randomAccessFileIO() throws IOException {
+
+		RandomAccessFile inputOutput = new RandomAccessFile("randomAccessFile.dat", "rw");
+
+		inputOutput.setLength(0);
+
+		System.out.println("the current randomAccessFile's length is = " + inputOutput.length());
+
+		inputOutput.seek(0);
+		
+		for (int i = 1; i < 100; i++) {
+			inputOutput.writeInt(i);
+		}
+		
+		inputOutput.seek(0 * 4);
+		System.out.println("The first number stored is: " + inputOutput.readInt());
+
+		inputOutput.seek(1 * 4);
+		System.out.println("The 2nd number stored is: " + inputOutput.readInt());
+
+		inputOutput.seek(2 * 4);
+		System.out.println("The third number stored is: " + inputOutput.readInt());
+
+		inputOutput.seek(9 * 4);
+		System.out.println("The tenth number stored is: " + inputOutput.readInt());
+
+		inputOutput.writeInt(143);
+		
+		inputOutput.seek(10 * 4);
+		System.out.println("the eleventh number stored is: " + inputOutput.readInt());
+		
+		inputOutput.seek(inputOutput.length());
+		
+		System.out.println("current file length is: " + inputOutput.length());
+		inputOutput.writeInt(918);
+		System.out.println("Now, the updated file length is: " + inputOutput.length());
+		
+		inputOutput.close();
 	}
 
 }
