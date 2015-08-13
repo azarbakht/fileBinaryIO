@@ -7,18 +7,26 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 
 public class FileBinaryIO {
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, ClassNotFoundException{
 
 		output();
 		input();
+
 		dataStreamOutput();
 		dataStreamInput();
+
 		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+
 		findEOF();
+
+		objectOutputStreaming();
+		objectInputStreaming();
 	}
 
 	public static void output() throws IOException {
@@ -101,6 +109,28 @@ public class FileBinaryIO {
 			e.printStackTrace();
 		}
 
+		input.close();
+	}
+
+
+	public static void objectOutputStreaming() throws IOException {
+		ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream("fileWithObjectsInIt.dat"));
+
+		output.writeUTF("Emerson saving objects here...");
+		output.writeDouble(14);
+		output.writeObject(new java.util.Date());
+
+		output.close();
+	}
+	
+	public static void objectInputStreaming() throws IOException, ClassNotFoundException {
+		ObjectInputStream input = new ObjectInputStream(new FileInputStream("fileWithObjectsInIt.dat"));
+		
+		String stringUTFcontent = input.readUTF();
+		double adad = input.readDouble();
+		java.util.Date date = (java.util.Date)(input.readObject());
+		System.out.println(stringUTFcontent + "\n" + adad  + "\n" + date);
+		
 		input.close();
 	}
 
